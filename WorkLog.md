@@ -16,4 +16,6 @@ Update package.json `npm run dev` command with port 80 (-p 80)
 
 lando rebuild
 
+From here I have a working Next.JS site running in lando
+
 ##
