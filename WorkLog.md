@@ -1,5 +1,8 @@
 # TODO
 
+- Get example app hosted on firebase
+- Get a way to record burpees to databse
+
 # Steps taken
 
 ## Project Initiation

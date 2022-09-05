@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "vite",
-    "dev": "vite dev",
+    "dev": "vite dev --host",
     "build": "vite build",
     "serve": "vite preview"
   },
