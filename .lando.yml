@@ -1,0 +1,25 @@
+# This is an example repo of a node app running along side a drupal application
+# Its most common when you have a headless or hybrid drupal setup and need to have a dev server running
+
+name: daily-burpees
+proxy:
+  node:
+    - daily-burpees.decoupled.lndo.site
+
+services:
+  # This is the main node app, usually a dev server
+  node:
+    type: node:16
+    build:
+      - npm install
+    command:
+      - npm run dev
+    scanner: false # Can't seem to healthcheck so loads slow
+
+tooling:
+  npm:
+    service: node
+    cmd: npm
+  npx:
+    service: node
+    cmd: npx
