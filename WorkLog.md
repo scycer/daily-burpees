@@ -8,14 +8,15 @@ Setup lando container to start initiating the project
 
 `lando start`
 
-`lando npx create-next-app@latest --typescript`
-`mv -f ./daily-burpees/{.,}\* ./`
+`lando npx degit solidjs/templates/ts daily-burpees`
+
+`mv -f ./daily-burpees/{.,}* ./`
 `rm -f ./daily-burpees`
 
-Update package.json `npm run dev` command with port 80 (-p 80)
+Update vite.config.ts with port 80 (--port 80)
 
 lando rebuild
 
-From here I have a working Next.JS site running in lando
+From here I have a working SolidJS example running in lando
 
 ##
