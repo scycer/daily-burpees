@@ -6,6 +6,7 @@
     "start": "vite",
     "dev": "vite dev --host",
     "build": "vite build",
+    "deploy": "vite build & firebase deploy --only hosting",
     "serve": "vite preview"
   },
   "license": "MIT",
@@ -15,6 +16,7 @@
     "vite-plugin-solid": "^2.3.0"
   },
   "dependencies": {
+    "firebase": "^9.9.4",
     "solid-js": "^1.5.1"
   }
 }

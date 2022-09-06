@@ -15,6 +15,15 @@ services:
     command:
       - npm run dev
     scanner: false # Can't seem to healthcheck so loads slow
+    moreHttpPorts: [
+        9099, # Firebase Auth Emulator
+        5001, # Firebase Serve
+        5001, # Firebase Functions Emulator
+        8080, # Firebase Firestore Emulator
+        5000, # Firebase Hosting Emulator
+        9098, # Firebase Emulator UI
+        9005, # Firebase Login Port
+      ]
 
 tooling:
   npm:
@@ -23,3 +32,6 @@ tooling:
   npx:
     service: node
     cmd: npx
+  firebase:
+    service: node
+    cmd: firebase
