@@ -8,6 +8,7 @@ import { collection, addDoc, getDocs } from 'firebase/firestore'
 import {
   GoogleAuthProvider,
   signInWithRedirect,
+  signOut,
   getAuth,
   getRedirectResult,
   onAuthStateChanged
@@ -78,6 +79,12 @@ enum APIState {
   ERROR
 }
 
+enum AuthState {
+  CHECKING,
+  LOGGED_IN,
+  LOGGED_OUT
+}
+
 // group BurpeeRecords by day date in an array, each day has the count of burpees and original counts
 const groupBurpeesByDay = (
   burpees: BurpeeRecord[]
@@ -101,22 +108,29 @@ const groupBurpeesByDay = (
 }
 
 const App: Component = () => {
+  // User
+  const [authState, setAuthState] = createSignal<AuthState>(AuthState.CHECKING)
+
   // Add Burpees Stat
   const defaultCount = 10
   const [count, setCount] = createSignal(defaultCount)
-  const [saveState, setSaveState] = createSignal(APIState.IDLE)
-  const [error, setError] = createSignal('')
+  const [addBurpeeState, setAddBurpeeState] = createSignal(APIState.IDLE)
+  const [addBurpeeError, setAddBurpeeError] = createSignal<Error | undefined>(
+    undefined
+  )
 
   // Get Burpees State
   const [burpees, setBurpees] = createSignal<BurpeeRecord[]>([])
   const [getBurpeesState, setGetBurpeesState] = createSignal(APIState.IDLE)
-  const [getBurpeesError, setGetBurpeesError] = createSignal('')
+  const [getBurpeesError, setGetBurpeesError] = createSignal<Error | undefined>(
+    undefined
+  )
 
   // Clear success state after 2 seconds
   createEffect(() => {
-    if (saveState() === APIState.SUCCESS) {
+    if (addBurpeeState() === APIState.SUCCESS) {
       setTimeout(() => {
-        setSaveState(APIState.IDLE)
+        setAddBurpeeState(APIState.IDLE)
       }, 2000)
     }
   })
@@ -146,23 +160,30 @@ const App: Component = () => {
     getBurpees()
   }, [])
 
+  // Add Burpees
   const addBurpeeRecord = () => {
-    setSaveState(APIState.LOADING)
+    setAddBurpeeState(APIState.LOADING)
     addBurpeeRecordDB(count())
       .then(() => {
-        setSaveState(APIState.SUCCESS)
+        setAddBurpeeState(APIState.SUCCESS)
         setCount(defaultCount)
         getBurpees()
       })
-      .catch(() => {
-        setSaveState(APIState.ERROR)
+      .catch(err => {
+        console.log(err)
+        setAddBurpeeState(APIState.ERROR)
+        setAddBurpeeError(err)
       })
   }
 
+  // Handle Auth State
   createEffect(() => {
+    getRedirectResult(auth)
     onAuthStateChanged(auth, user => {
       if (!user) {
-        signInWithRedirect(auth, provider)
+        setAuthState(AuthState.LOGGED_OUT)
+      } else {
+        setAuthState(AuthState.LOGGED_IN)
       }
     })
   }, [])
@@ -171,56 +192,88 @@ const App: Component = () => {
     <div class={styles.App}>
       <div>
         <h1>Daily Burpees</h1>
-        <div>Signed In: {auth.currentUser?.displayName}</div>
-        {/* Burpee Count UI */}
-        How many burpees?
-        <div style={{ display: 'flex', padding: '16px' }}>
-          <button onClick={() => setCount(prev => prev - 5)}> -5 </button>
-          <p style={{ display: 'flex', padding: '16px' }}>{count}</p>
-          <button onClick={() => setCount(prev => prev + 5)}> +5 </button>
+        <div>
+          Signed In: {}
+          <button
+            onClick={() => {
+              signOut(auth)
+            }}
+          >
+            Sign Out
+          </button>
         </div>
-        {/* Save */}
-        {(saveState() === APIState.IDLE || saveState() === APIState.ERROR) && (
-          <div>
-            <button onClick={e => addBurpeeRecord()}>Save</button>
-          </div>
-        )}
-        {saveState() === APIState.LOADING && <p>Saving...</p>}
-        {saveState() === APIState.SUCCESS && <p>Saved!</p>}
-        {saveState() === APIState.ERROR && <p>Error: {error()}</p>}
-      </div>
-      <div>
-        {/* List of Burpees */}
-        <h2>History</h2>
-        {getBurpeesState() === APIState.LOADING && <p>Loading...</p>}
-        {getBurpeesState() === APIState.SUCCESS && (
-          <div>
-            {groupBurpeesByDay(burpees()).map((burpeeGroup, index) => (
-              <div>
-                <h3>{burpeeGroup.day}</h3>
-                <p>Total: {burpeeGroup.sum}</p>
-                <ul>
-                  {burpeeGroup.burpees.map((burpee, index) => (
-                    <span>{burpee.count},</span>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+        <div>Auth State: {authState}</div>
 
-          // Boring table
-          // <div>
-          //   <ul>
-          //     {burpees().map(burpee => (
-          //       <li>
-          //         {burpee.count} on {burpee.date.toLocaleString()}
-          //       </li>
-          //     ))}
-          //   </ul>
-          // </div>
+        {authState() === AuthState.LOGGED_OUT && (
+          <div>
+            <button
+              onClick={() => {
+                signInWithRedirect(auth, provider)
+              }}
+            >
+              Login
+            </button>
+          </div>
         )}
-        {getBurpeesState() === APIState.ERROR && (
-          <p>Error: {getBurpeesError()}</p>
+
+        {authState() === AuthState.LOGGED_IN && (
+          <div>
+            <div>
+              {/* Burpee Count UI */}
+              How many burpees?
+              <div style={{ display: 'flex', padding: '16px' }}>
+                <button onClick={() => setCount(prev => prev - 5)}> -5 </button>
+                <p style={{ display: 'flex', padding: '16px' }}>{count}</p>
+                <button onClick={() => setCount(prev => prev + 5)}> +5 </button>
+              </div>
+              {/* Save */}
+              {(addBurpeeState() === APIState.IDLE ||
+                addBurpeeState() === APIState.ERROR) && (
+                <div>
+                  <button onClick={e => addBurpeeRecord()}>Save</button>
+                </div>
+              )}
+              {addBurpeeState() === APIState.LOADING && <p>Saving...</p>}
+              {addBurpeeState() === APIState.SUCCESS && <p>Saved!</p>}
+              {addBurpeeState() === APIState.ERROR && (
+                <p>Error: {addBurpeeError()?.message}</p>
+              )}
+            </div>
+            <div>
+              {/* List of Burpees */}
+              <h2>History</h2>
+              {getBurpeesState() === APIState.LOADING && <p>Loading...</p>}
+              {getBurpeesState() === APIState.SUCCESS && (
+                <div>
+                  {groupBurpeesByDay(burpees()).map((burpeeGroup, index) => (
+                    <div>
+                      <h3>{burpeeGroup.day}</h3>
+                      <p>Total: {burpeeGroup.sum}</p>
+                      <ul>
+                        {burpeeGroup.burpees.map((burpee, index) => (
+                          <span>{burpee.count},</span>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+
+                // Boring table
+                // <div>
+                //   <ul>
+                //     {burpees().map(burpee => (
+                //       <li>
+                //         {burpee.count} on {burpee.date.toLocaleString()}
+                //       </li>
+                //     ))}
+                //   </ul>
+                // </div>
+              )}
+              {getBurpeesState() === APIState.ERROR && (
+                <p>Error: {getBurpeesError()}</p>
+              )}
+            </div>
+          </div>
         )}
       </div>
     </div>
