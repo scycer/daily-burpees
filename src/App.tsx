@@ -39,7 +39,13 @@ type BurpeeRecord = {
   date: Date
 }
 
-const burpeesCollection = collection(db, 'burpees').withConverter({
+// ####################################################
+const MOCK_MODE = false
+// ####################################################
+
+const collectionName = MOCK_MODE ? 'burpees-test' : 'burpees'
+
+const burpeesCollection = collection(db, collectionName).withConverter({
   toFirestore: (burpee: BurpeeRecord) => burpee,
   fromFirestore: (snapshot: any, options: any): BurpeeRecord => {
     const data: any = snapshot.data(options)
@@ -54,10 +60,10 @@ const burpeesCollection = collection(db, 'burpees').withConverter({
 })
 
 // Add a new document for a burpee session
-const addBurpeeRecordDB = async (count: number) => {
-  return await addDoc(collection(db, 'burpees'), {
+const addBurpeeRecordDB = async (count: number, date?: Date) => {
+  return await addDoc(collection(db, collectionName), {
     count: count,
-    date: new Date()
+    date: date || new Date()
   })
 }
 
