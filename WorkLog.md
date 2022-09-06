@@ -1,3 +1,5 @@
 # TODO
 
-- Import old data into firebase
+- add auth
+- add goal and progress bar?
+- add other summary data from excel sheet
