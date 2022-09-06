@@ -41,7 +41,7 @@ type BurpeeRecord = {
 }
 
 // ####################################################
-const TEST_MODE = true
+const TEST_MODE = false
 // ####################################################
 
 const collectionName = TEST_MODE ? 'burpees-test' : 'burpees'
