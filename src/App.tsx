@@ -40,10 +40,10 @@ type BurpeeRecord = {
 }
 
 // ####################################################
-const MOCK_MODE = false
+const TEST_MODE = false
 // ####################################################
 
-const collectionName = MOCK_MODE ? 'burpees-test' : 'burpees'
+const collectionName = TEST_MODE ? 'burpees-test' : 'burpees'
 
 const burpeesCollection = collection(db, collectionName).withConverter({
   toFirestore: (burpee: BurpeeRecord) => burpee,
