@@ -2,7 +2,7 @@ import { Component, createSignal, createEffect } from 'solid-js'
 import styles from './App.module.css'
 
 import { initializeApp } from 'firebase/app'
-import { getAnalytics } from 'firebase/analytics'
+import { getAnalytics, logEvent } from 'firebase/analytics'
 import { getFirestore } from 'firebase/firestore'
 import { collection, addDoc, getDocs } from 'firebase/firestore'
 import {
@@ -62,6 +62,7 @@ const burpeesCollection = collection(db, collectionName).withConverter({
 
 // Add a new document for a burpee session
 const addBurpeeRecordDB = async (count: number, date?: Date) => {
+  logEvent(analytics, 'add_burpee_record', {})
   return await addDoc(collection(db, collectionName), {
     count: count,
     date: date || new Date()
@@ -69,6 +70,7 @@ const addBurpeeRecordDB = async (count: number, date?: Date) => {
 }
 
 const getListOfBurpees = async () => {
+  logEvent(analytics, 'get_burpee_records', {})
   return await getDocs(burpeesCollection)
 }
 
@@ -155,7 +157,7 @@ const App: Component = () => {
       })
   }
 
-  // Get Burpees on load
+  // On Load actions
   createEffect(() => {
     getBurpees()
   }, [])
