@@ -103,7 +103,6 @@ const Burpees: Component<{
 
   // Estimated days till goal
   const estimatedDaysLeft = (burpees: BurpeeRecord[] | undefined) => {
-    console.log(dailyAverage(burpees) / burpeesToGo(burpees))
     return Math.floor(burpeesToGo(burpees) / dailyAverage(burpees))
   }
 
@@ -115,51 +114,19 @@ const Burpees: Component<{
   }
 
   return (
-    <div>
+    <div class='h-max'>
       {/* Body */}
-      <div class='text-center m-8'>
+      <div class='text-center p-8 bg-[#14204A]'>
         {/* Today's Progress */}
+        <h2>Today's Progress</h2>
+        <ProgressBar
+          progress={todayBurpees(props.burpees)?.sum || 0}
+          goal={props.dailyGoal}
+        />
+      </div>
+
+      <div class='p-8 flex flex-col h-full justify-around'>
         <div>
-          <h2>Today's Progress</h2>
-          <ProgressBar
-            progress={todayBurpees(props.burpees)?.sum || 0}
-            goal={props.dailyGoal}
-          />
-        </div>
-
-        {/* Record Session - Count, a button to increase and decrease count and save */}
-        <div class='m-8'>
-          <h2>Record Session</h2>
-          <div class='flex gaps-4 justify m-4'>
-            <button
-              class={`bg-[#3B94CB] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#2A669F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9CD7E5]`}
-              onClick={() =>
-                props.updateCount(
-                  props.count < 6 ? 5 : props.count - settings.incDecAmount
-                )
-              }
-            >
-              -{settings.incDecAmount}
-            </button>
-            <p class='m-auto '>{props.count}</p>
-            <button
-              class='bg-[#3B94CB] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#2A669F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9CD7E5]'
-              onClick={() =>
-                props.updateCount(props.count + settings.incDecAmount)
-              }
-            >
-              +{settings.incDecAmount}
-            </button>
-          </div>
-          <button
-            class='bg-[#B30F0F] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#EF4444] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EF4444]'
-            onClick={() => props.addBurpeeRecord()}
-          >
-            Save
-          </button>
-        </div>
-
-        <div class=''>
           <h2>
             Estimated Days Left (
             {estimatedFinishDate(props.burpees).toLocaleDateString()})
@@ -171,24 +138,63 @@ const Burpees: Component<{
               estimatedDaysLeft(props.burpees)
             }
           />
-
+        </div>
+        <div>
           <h2>Average per day </h2>
           <ProgressBar
             progress={dailyAverage(props.burpees)}
             goal={props.dailyGoal}
           />
-
+        </div>
+        <div>
           <h2>Goal Progress</h2>
           <ProgressBar
             progress={totalBurpees(props.burpees || [])}
             goal={props.goal}
           />
-
+        </div>
+        <div>
           <h2>Goal days left ({props.endDate.toLocaleDateString()})</h2>
           <ProgressBar
             progress={daysSinceFirstBurpee(props.burpees)}
             goal={daysLeft(props.endDate)}
           />
+        </div>
+      </div>
+      <div class='text-center p-8 bg-[#14204A] bottom-0 absolute w-full'>
+        {/* Record Session - Count, a button to increase and decrease count and save */}
+        <div class=''>
+          <h2>Record Session</h2>
+          <div class='flex gaps-4 justify m-4'>
+            <button
+              class='bg-[#B30F0F] text-white px-4 py-2 rounded-md shadow-sm'
+              onClick={() => props.addBurpeeRecord()}
+            >
+              Save
+            </button>
+
+            <p class='m-auto font-bold'>{props.count}</p>
+            <div class='flex gap-6'>
+              <button
+                class='bg-[#3B94CB] text-white px-4 py-2 rounded-md shadow-sm'
+                onClick={() =>
+                  props.updateCount(props.count + settings.incDecAmount)
+                }
+              >
+                +{settings.incDecAmount}
+              </button>
+              <button
+                class={`bg-[#3B94CB] text-white px-4 py-2 rounded-md shadow-sm`}
+                onClick={() =>
+                  props.updateCount(
+                    props.count < 6 ? 5 : props.count - settings.incDecAmount
+                  )
+                }
+              >
+                -{settings.incDecAmount}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
