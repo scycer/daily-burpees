@@ -1,13 +1,39 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/*
+Color Scheme
+
+Blues
+https://www.tailwindshades.com/#color=209%2C58%2C39.411764705882355&step-up=12&step-down=7&hue-shift=-59&name=great-blue&base-stop=5&overrides=e30%3D
+50 #E4F7F8
+100 #CCEEF2
+200 #9CD7E5
+300 #6CB9D8
+400 #3B94CB
+500 #2A669F
+600 #234B83
+700 #1B3366
+800 #14204A
+900 #0C102E
+
+Reds
+https://www.tailwindshades.com/#color=0%2C84.23645320197043%2C60.19607843137255&step-up=8&step-down=11&hue-shift=0&name=flamingo&base-stop=3&overrides=e30%3D
+50 #F7A2A2
+100 #F58F8F
+200 #F26A6A
+300 #EF4444
+400 #E71414
+500 #B30F0F
+600 #800B0B
+700 #4C0707
+800 #180202
+900 #000000
+*/
+
+body {
+  font-family: 'Roboto Mono';
+  color: #9CD7E5;
+  background-color: #0C102E;
 }
