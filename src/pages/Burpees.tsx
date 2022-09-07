@@ -116,7 +116,7 @@ const Burpees: Component<{
   return (
     <div class='h-max'>
       {/* Body */}
-      <div class='text-center p-8 bg-[#14204A]'>
+      <div class='text-center py-4 px-8 bg-[#14204A]'>
         {/* Today's Progress */}
         <h2>Today's Progress</h2>
         <ProgressBar
@@ -125,7 +125,7 @@ const Burpees: Component<{
         />
       </div>
 
-      <div class='p-8 flex flex-col h-full justify-around'>
+      <div class='py-4 px-8 flex flex-col h-full justify-around'>
         <div>
           <h2>
             Estimated Days Left (
@@ -161,7 +161,7 @@ const Burpees: Component<{
           />
         </div>
       </div>
-      <div class='text-center p-8 bg-[#14204A] bottom-0 absolute w-full'>
+      <div class='text-center py-4 px-8 bg-[#14204A] bottom-0 absolute w-full'>
         {/* Record Session - Count, a button to increase and decrease count and save */}
         <div class=''>
           <h2>Record Session</h2>
