@@ -1,4 +1,4 @@
-import { Component, createSignal, createEffect } from 'solid-js'
+import { Component, createSignal, createEffect, onCleanup } from 'solid-js'
 import styles from './App.module.css'
 
 import { initializeApp } from 'firebase/app'
@@ -151,6 +151,8 @@ const App: Component = () => {
   // On Load actions
   createEffect(() => {
     getBurpees()
+    const timer = setInterval(() => getBurpees(), 1000 * 60 * 30) // 30 minutes
+    onCleanup(() => clearInterval(timer))
   }, [])
 
   // Add Burpees
