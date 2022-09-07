@@ -1,5 +1,6 @@
 # TODO
 
+- hide "record" when not logged in
 - make app installable
 - handle loading data and saving states
 - Better way to show what i did in a day

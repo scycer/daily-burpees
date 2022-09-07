@@ -176,14 +176,6 @@ const Burpees: Component<{
             <p class='m-auto font-bold'>{props.count}</p>
             <div class='flex gap-6'>
               <button
-                class='bg-[#3B94CB] text-white px-4 py-2 rounded-md shadow-sm'
-                onClick={() =>
-                  props.updateCount(props.count + settings.incDecAmount)
-                }
-              >
-                +{settings.incDecAmount}
-              </button>
-              <button
                 class={`bg-[#3B94CB] text-white px-4 py-2 rounded-md shadow-sm`}
                 onClick={() =>
                   props.updateCount(
@@ -192,6 +184,14 @@ const Burpees: Component<{
                 }
               >
                 -{settings.incDecAmount}
+              </button>
+              <button
+                class='bg-[#3B94CB] text-white px-4 py-2 rounded-md shadow-sm'
+                onClick={() =>
+                  props.updateCount(props.count + settings.incDecAmount)
+                }
+              >
+                +{settings.incDecAmount}
               </button>
             </div>
           </div>
