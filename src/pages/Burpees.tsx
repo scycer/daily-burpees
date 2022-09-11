@@ -1,4 +1,4 @@
-import { Component, createSignal } from 'solid-js'
+import { Component, createSignal, createEffect } from 'solid-js'
 import { BurpeeRecord } from '../App'
 import ProgressBar from '../components/ProgressBar'
 
@@ -71,6 +71,24 @@ const Burpees: Component<{
         })
       : undefined
 
+  // Filter burpees to only include last 7 days
+  const last7DaysBurpees = (burpees: BurpeeRecord[] | undefined) =>
+    burpees
+      ? groupBurpeesByDay(burpees || []).filter(group => {
+          const today = new Date()
+          const [day, month, year] = group.day.split('/')
+          const groupDate = new Date(
+            parseInt(year),
+            parseInt(month) - 1,
+            parseInt(day)
+          )
+          const diffTime = Math.abs(today.getTime() - groupDate.getTime())
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+          console.log(group.day, groupDate, diffDays)
+          return diffDays <= 7
+        })
+      : undefined
+
   // Daily average
   const dailyAverage = (burpees: BurpeeRecord[] | undefined) =>
     Math.floor(
@@ -103,7 +121,15 @@ const Burpees: Component<{
 
   // Estimated days till goal
   const estimatedDaysLeft = (burpees: BurpeeRecord[] | undefined) => {
-    return Math.floor(burpeesToGo(burpees) / dailyAverage(burpees))
+    return Math.floor(
+      burpeesToGo(burpees) /
+        Math.ceil(
+          (last7DaysBurpees(props.burpees)?.reduce(
+            (acc, day) => acc + day.sum,
+            0
+          ) || 0) / 7
+        )
+    )
   }
 
   // Estimated date till goal
@@ -121,11 +147,43 @@ const Burpees: Component<{
         <h2>Today's Progress</h2>
         <ProgressBar
           progress={todayBurpees(props.burpees)?.sum || 0}
-          goal={props.dailyGoal}
+          goal={Math.ceil(
+            (props.goal - totalBurpees(props.burpees || [])) /
+              daysLeft(props.endDate)
+          )}
         />
+        {/* Last 3 recordings from today, showing minutes since it happened */}
+        <div>
+          {todayBurpees(props.burpees)
+            ?.burpees.sort((a, b) => a.date.getTime() - b.date.getTime())
+            .slice(-1)
+            .map(burpee => (
+              <div>
+                {burpee.count} burpees
+                {' - '}
+                {Math.floor(
+                  (new Date().getTime() - new Date(burpee.date).getTime()) /
+                    (1000 * 60)
+                )}{' '}
+                minutes ago
+              </div>
+            ))}
+        </div>
       </div>
 
       <div class='py-4 px-8 flex flex-col h-full justify-around'>
+        <div>
+          <h2>Against 7 day average </h2>
+          <ProgressBar
+            progress={todayBurpees(props.burpees)?.sum || 0}
+            goal={Math.ceil(
+              (last7DaysBurpees(props.burpees)?.reduce(
+                (acc, day) => acc + day.sum,
+                0
+              ) || 0) / 7
+            )}
+          />
+        </div>
         <div>
           <h2>
             Estimated Days Left (
@@ -140,10 +198,10 @@ const Burpees: Component<{
           />
         </div>
         <div>
-          <h2>Average per day </h2>
+          <h2>Goal days left ({props.endDate.toLocaleDateString()})</h2>
           <ProgressBar
-            progress={dailyAverage(props.burpees)}
-            goal={props.dailyGoal}
+            progress={daysSinceFirstBurpee(props.burpees)}
+            goal={daysSinceFirstBurpee(props.burpees) + daysLeft(props.endDate)}
           />
         </div>
         <div>
@@ -151,13 +209,6 @@ const Burpees: Component<{
           <ProgressBar
             progress={totalBurpees(props.burpees || [])}
             goal={props.goal}
-          />
-        </div>
-        <div>
-          <h2>Goal days left ({props.endDate.toLocaleDateString()})</h2>
-          <ProgressBar
-            progress={daysSinceFirstBurpee(props.burpees)}
-            goal={daysLeft(props.endDate)}
           />
         </div>
       </div>

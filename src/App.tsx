@@ -203,7 +203,7 @@ const App: Component = () => {
         updateCount={setCount}
         addBurpeeRecord={addBurpeeRecord}
         goal={7849} // Price of my new bike Torque:ON 7
-        endDate={new Date('9 Feb 2023')} // My Birthday
+        endDate={new Date('1 Nov 2022')}
         dailyGoal={100}
       />
     </div>
