@@ -184,7 +184,7 @@ const App: Component = () => {
   }, [])
 
   return (
-    <div class={styles.App}>
+    <div class='h-screen flex flex-col '>
       {/* TEST_MODE */}
       {TEST_MODE && (
         <div class='absolute text-bold w-full text-center bg-red-500'>

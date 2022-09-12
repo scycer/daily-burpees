@@ -84,8 +84,7 @@ const Burpees: Component<{
           )
           const diffTime = Math.abs(today.getTime() - groupDate.getTime())
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-          console.log(group.day, groupDate, diffDays)
-          return diffDays <= 7
+          return diffDays <= 7 && diffDays > 1
         })
       : undefined
 
@@ -140,7 +139,7 @@ const Burpees: Component<{
   }
 
   return (
-    <div class='h-max'>
+    <div class='flex flex-col justify-between'>
       {/* Body */}
       <div class='text-center py-4 px-8 bg-[#14204A]'>
         {/* Today's Progress */}
@@ -212,7 +211,7 @@ const Burpees: Component<{
           />
         </div>
       </div>
-      <div class='text-center py-4 px-8 bg-[#14204A] bottom-0 absolute w-full'>
+      <div class='text-center py-4 px-8 bg-[#14204A]  w-full'>
         {/* Record Session - Count, a button to increase and decrease count and save */}
         <div class=''>
           <h2>Record Session</h2>
