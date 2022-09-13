@@ -84,7 +84,7 @@ const Burpees: Component<{
           )
           const diffTime = Math.abs(today.getTime() - groupDate.getTime())
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-          return diffDays <= 7 && diffDays > 1
+          return diffDays <= 8 && diffDays > 1
         })
       : undefined
 
@@ -139,7 +139,7 @@ const Burpees: Component<{
   }
 
   return (
-    <div class='flex flex-col justify-between'>
+    <div class=''>
       {/* Body */}
       <div class='text-center py-4 px-8 bg-[#14204A]'>
         {/* Today's Progress */}
@@ -151,7 +151,7 @@ const Burpees: Component<{
               daysLeft(props.endDate)
           )}
         />
-        {/* Last 3 recordings from today, showing minutes since it happened */}
+        {/* Last recording from today, showing minutes since it happened */}
         <div>
           {todayBurpees(props.burpees)
             ?.burpees.sort((a, b) => a.date.getTime() - b.date.getTime())

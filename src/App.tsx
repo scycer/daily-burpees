@@ -184,7 +184,7 @@ const App: Component = () => {
   }, [])
 
   return (
-    <div class='h-screen flex flex-col '>
+    <div class=' '>
       {/* TEST_MODE */}
       {TEST_MODE && (
         <div class='absolute text-bold w-full text-center bg-red-500'>
@@ -203,7 +203,7 @@ const App: Component = () => {
         updateCount={setCount}
         addBurpeeRecord={addBurpeeRecord}
         goal={7849} // Price of my new bike Torque:ON 7
-        endDate={new Date('1 Nov 2022')}
+        endDate={new Date('1 Dec 2022')}
         dailyGoal={100}
       />
     </div>
